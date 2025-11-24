@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>QR из ссылки</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Библиотека с CDN, НИЧЕГО дополнительно не качаем -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 0 10px;
+    }
+    h1 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #qrcode {
+      margin-top: 20px;
+      text-align: center;
+    }
+    #qrcode img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Генератор QR-кода</h1>
+  <p>Вставь ссылку и нажми кнопку. Ниже появится QR-код.</p>
+
+  <input id="urlInput" type="text" placeholder="https://example.com">
+  <button onclick="makeQR()">Сделать QR</button>
+
+  <div id="qrcode"></div>
+
+  <script>
+    let qr = null;
+
+    function makeQR() {
+      const url = document.getElementById("urlInput").value.trim();
+      if (!url) {
+        alert("Сначала введи ссылку ");
+        return;
+      }
+
+      const container = document.getElementById("qrcode");
+      container.innerHTML = "";
+
+      if (!qr) {
+        qr = new QRCode(container, {
+          text: url,
+          width: 256,
+          height: 256,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } else {
+        qr.makeCode(url);
+      }
+    }
+  </script>
+</body>
+</html>
