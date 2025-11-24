@@ -5,66 +5,239 @@
   <title>QR из ссылки</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Библиотека с CDN, НИЧЕГО дополнительно не качаем -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      max-width: 500px;
-      margin: 20px auto;
-      padding: 0 10px;
-    }
-    h1 {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
+    * {
       box-sizing: border-box;
-      margin-bottom: 10px;
     }
-    button {
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #111827, #1f2937);
+      color: #f9fafb;
+    }
+
+    .app {
       width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
+      max-width: 420px;
+      background: rgba(17, 24, 39, 0.95);
+      border-radius: 16px;
+      padding: 20px 18px 24px;
+      box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(156, 163, 175, 0.15);
     }
-    #qrcode {
-      margin-top: 20px;
+
+    .app-header {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .app-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+
+    .app-subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .input-group {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 12px 12px;
+      font-size: 15px;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      background-color: #111827;
+      color: #f9fafb;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    }
+
+    .url-input::placeholder {
+      color: #6b7280;
+    }
+
+    .url-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+      background-color: #020617;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1 1 0;
+      padding: 11px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s, opacity 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn-generate {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #f9fafb;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-generate:hover {
+      background: linear-gradient(135deg, #1d4ed8, #4338ca);
+    }
+
+    .btn-generate:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-download {
+      background-color: #111827;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+    }
+
+    .btn-download:hover {
+      background-color: #020617;
+    }
+
+    .btn-download:active {
+      transform: translateY(1px);
+    }
+
+    .btn-download.disabled {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .qr-wrapper {
+      margin-top: 22px;
+      padding: 18px 10px 4px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.2), transparent 60%),
+                  rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.7);
       text-align: center;
     }
-    #qrcode img {
-      max-width: 100%;
-      height: auto;
+
+    .qr-placeholder {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    #qrcode {
+      margin: 6px auto 10px;
+      display: inline-block;
+    }
+
+    #qrcode img,
+    #qrcode canvas {
+      max-width: 220px;
+      max-height: 220px;
+      width: 220px;
+      height: 220px;
+      image-rendering: pixelated;
+    }
+
+    .note {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .app {
+        margin: 16px;
+        padding: 18px 14px 20px;
+      }
+
+      .app-title {
+        font-size: 20px;
+      }
+
+      #qrcode img,
+      #qrcode canvas {
+        width: 190px;
+        height: 190px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="app">
+    <header class="app-header">
+      <h1 class="app-title">Генератор QR-кода</h1>
+      <p class="app-subtitle">Вставь ссылку, получи статичный QR и используй его когда угодно.</p>
+    </header>
 
-  <h1>Генератор QR-кода</h1>
-  <p>Вставь ссылку и нажми кнопку. Ниже появится QR-код.</p>
+    <div class="input-group">
+      <input id="urlInput" class="url-input" type="text" placeholder="https://example.com">
+      <div class="button-row">
+        <button class="btn btn-generate" onclick="makeQR()">
+          🔄 Сгенерировать
+        </button>
+        <button id="downloadBtn" class="btn btn-download disabled" onclick="downloadQR()" disabled>
+          ⬇️ Скачать QR
+        </button>
+      </div>
+    </div>
 
-  <input id="urlInput" type="text" placeholder="https://example.com">
-  <button onclick="makeQR()">Сделать QR</button>
-
-  <div id="qrcode"></div>
+    <div class="qr-wrapper">
+      <div class="qr-placeholder" id="qrPlaceholder">
+        Здесь появится твой QR-код после генерации.
+      </div>
+      <div id="qrcode"></div>
+      <p class="note">
+        QR-код статичный и будет работать, пока жива сама ссылка.
+      </p>
+    </div>
+  </div>
 
   <script>
     let qr = null;
+    let hasQR = false;
 
     function makeQR() {
       const url = document.getElementById("urlInput").value.trim();
       if (!url) {
-        alert("Сначала введи ссылку ");
+        alert("Сначала введи ссылку");
         return;
       }
 
       const container = document.getElementById("qrcode");
-      container.innerHTML = "";
+      const placeholder = document.getElementById("qrPlaceholder");
+      const downloadBtn = document.getElementById("downloadBtn");
 
+  
       if (!qr) {
         qr = new QRCode(container, {
           text: url,
@@ -75,6 +248,40 @@
       } else {
         qr.makeCode(url);
       }
+
+      hasQR = true;
+      placeholder.textContent = "Наведите камеру — ссылка зашита в этот QR-код.";
+      downloadBtn.disabled = false;
+      downloadBtn.classList.remove("disabled");
+    }
+
+    function downloadQR() {
+      if (!hasQR) {
+        alert("Сначала создай QR-код.");
+        return;
+      }
+
+      const container = document.getElementById("qrcode");
+      const img = container.querySelector("img");
+      const canvas = container.querySelector("canvas");
+
+      let dataUrl;
+
+      if (canvas) {
+        dataUrl = canvas.toDataURL("image/png");
+      } else if (img && img.src) {
+        dataUrl = img.src;
+      } else {
+        alert("Не удалось найти изображение QR-кода.");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "qr-code.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 </body>
